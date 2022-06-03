@@ -2,8 +2,8 @@
 
 PROTOWRAP=hack/bin/protowrap
 PROTOC_GEN_GO=hack/bin/protoc-gen-go
-PROTOC_GEN_GO_GRPC=hack/bin/protoc-gen-go-grpc
 PROTOC_GEN_VTPROTO=hack/bin/protoc-gen-go-vtproto
+PROTOC_GEN_TWIRP=hack/bin/protoc-gen-twirp
 GOIMPORTS=hack/bin/goimports
 GOLANGCI_LINT=hack/bin/golangci-lint
 GO_MOD_OUTDATED=hack/bin/go-mod-outdated
@@ -24,11 +24,11 @@ $(PROTOC_GEN_GO):
 		-o ./bin/protoc-gen-go \
 		google.golang.org/protobuf/cmd/protoc-gen-go
 
-$(PROTOC_GEN_GO_GRPC):
+$(PROTOC_GEN_TWIRP):
 	cd ./hack; \
 	go build -v \
-		-o ./bin/protoc-gen-go-grpc \
-		google.golang.org/grpc/cmd/protoc-gen-go-grpc
+		-o ./bin/protoc-gen-twirp \
+		github.com/twitchtv/twirp/protoc-gen-twirp
 
 $(PROTOC_GEN_VTPROTO):
 	cd ./hack; \
@@ -64,7 +64,7 @@ $(GO_MOD_OUTDATED):
 # .. and remove the "grpc" option from the vtprotobuf features list.
 
 .PHONY: gengo
-gengo: $(GOIMPORTS) $(PROTOWRAP) $(PROTOC_GEN_GO) $(PROTOC_GEN_GO_GRPC) $(PROTOC_GEN_VTPROTO)
+gengo: $(GOIMPORTS) $(PROTOWRAP) $(PROTOC_GEN_GO) $(PROTOC_GEN_TWIRP) $(PROTOC_GEN_VTPROTO)
 	shopt -s globstar; \
 	set -eo pipefail; \
 	export PROJECT=$$(go list -m); \
@@ -75,8 +75,9 @@ gengo: $(GOIMPORTS) $(PROTOWRAP) $(PROTOC_GEN_GO) $(PROTOC_GEN_GO_GRPC) $(PROTOC
 	$(PROTOWRAP) \
 		-I $$(pwd)/vendor \
 		--go_out=$$(pwd)/vendor \
+		--twirp_out=$$(pwd)/vendor \
 		--go-vtproto_out=$$(pwd)/vendor \
-		--go-vtproto_opt=features=marshal+unmarshal+size+equal+clone+grpc \
+		--go-vtproto_opt=features=marshal+unmarshal+size+equal+clone \
 		--proto_path $$(pwd)/vendor \
 		--print_structure \
 		--only_specified_files \

@@ -10,8 +10,8 @@ import (
 	_ "google.golang.org/protobuf/cmd/protoc-gen-go"
 	// _ imports protoc-gen-go-vtproto
 	_ "github.com/planetscale/vtprotobuf/cmd/protoc-gen-go-vtproto"
-	// _ imports grpc
-	_ "google.golang.org/grpc/cmd/protoc-gen-go-grpc"
+	// _ imports protoc-gen-twirp
+	_ "github.com/twitchtv/twirp/protoc-gen-twirp"
 	// _ imports golangci-lint
 	_ "github.com/golangci/golangci-lint/pkg/golinters"
 	// _ imports golangci-lint commands
